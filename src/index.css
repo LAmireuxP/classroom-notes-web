@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  min-height: 100%;
+  /* React 挂载和父页面主题消息到达前，先按系统主题保持正确首帧。 */
+  background-color: #121212;
+}
+
+@media (prefers-color-scheme: light) {
+  html,
+  body,
+  #root {
+    background-color: #ffffff;
+  }
+}
+
+/* 手机全屏/桌面应用体验：禁橡皮筋下拉刷新、去点击高亮、按钮去双击缩放延迟 */
+html {
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+/* 系统开启「减弱动态效果」时，入场/过渡动画整体停用（数字滚动另有 JS 判断） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 设置里的「界面动效」开关：html.motion-off 时同样全局停用（应用内偏好优先于系统） */
+html.motion-off *,
+html.motion-off *::before,
+html.motion-off *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* 设置里的「字体大小：大」：整套字阶放大 1.125 倍（覆盖 burn 进 :root 的 --text-*） */
+html.font-large {
+  --text-xs: 13.5px;
+  --text-sm: 15.75px;
+  --text-base: 18px;
+  --text-lg: 20.25px;
+  --text-xl: 24.75px;
+  --text-2xl: 36px;
+  --text-3xl: 54px;
+  --text-4xl: 72px;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* shadcn 基础层兜底: 没写显式 text-x / bg-x 的文字和表面 (textarea 输入文字、
+     placeholder、气泡正文) 从这里继承主题色, 不依赖 UA 默认色.
+     烧主题前 token 未定义时这两行按无效值优雅回退, 无副作用. */
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* 中英混排对齐:一行里英文(尤其 ds 的 display/像素字体如 Press Start 2P)和中文(系统黑体)
+   混在一起时,英文会偏小、偏上,跟中文对不齐。把纯英文/数字那一截用 <span className="cjk-latin">
+   包起来即可统一对齐:font-size-adjust 拉平字号,vertical-align 把英文下移到与中文同基线。
+   --cjk-latin-shift 由 design_picker 按 ds 烧进 :root(默认 -0.15em);极个别字体偏差大改这一个值。 */
+.cjk-latin {
+  font-size-adjust: 0.56;
+  vertical-align: var(--cjk-latin-shift, -0.15em);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
+    --card-foreground: 0 0% 7%;
+    --popover-foreground: 0 0% 7%;
+    --card: 0 0% 98%;
+    --popover: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --muted: 0 0% 96%;
+    --accent: 0 0% 96%;
+    --secondary-foreground: 0 0% 23%;
+    --accent-foreground: 0 0% 23%;
+    --muted-foreground: 0 0% 47%;
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --primary: 221 83% 53%;
+    --ring: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 61% 48%;
+    --radius: var(--radius-md);
+
+    --space-1: 4px;
+    --space-12: 48px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --radius-lg: 8px;
+    --radius-md: 4px;
+    --radius-pill: 9999px;
+    --radius-sm: 2px;
+    --elev-flat: none;
+    --focus-ring: 0 0 0 3px rgba(17, 17, 17, 0.18);
+    --elev-raised: 0 12px 30px rgba(0, 0, 0, 0.08);
+    --elev-ring: 0 0 0 1px var(--border);
+    --text-2xl: 32px;
+    --text-3xl: 48px;
+    --text-4xl: 64px;
+    --text-base: 16px;
+    --text-lg: 18px;
+    --text-sm: 14px;
+    --text-xl: 22px;
+    --text-xs: 12px;
+    --leading-body: 1.55;
+    --leading-tight: 1.08;
+    --font-display: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    --font-body: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    --font-mono: "SF Mono", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", ui-monospace, Menlo, monospace;
+    --cjk-latin-shift: -0.15em;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
+    --card-foreground: 0 0% 7%;
+    --popover-foreground: 0 0% 7%;
+    --card: 0 0% 98%;
+    --popover: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --muted: 0 0% 96%;
+    --accent: 0 0% 96%;
+    --secondary-foreground: 0 0% 23%;
+    --accent-foreground: 0 0% 23%;
+    --muted-foreground: 0 0% 47%;
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --primary: 217 91% 65%;
+    --ring: 217 91% 65%;
+    --primary-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 72% 58%;
+    --radius: var(--radius-md);
+
+    --space-1: 4px;
+    --space-12: 48px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --radius-lg: 8px;
+    --radius-md: 4px;
+    --radius-pill: 9999px;
+    --radius-sm: 2px;
+    --elev-flat: none;
+    --focus-ring: 0 0 0 3px rgba(17, 17, 17, 0.18);
+    --elev-raised: 0 12px 30px rgba(0, 0, 0, 0.08);
+    --elev-ring: 0 0 0 1px var(--border);
+    --text-2xl: 32px;
+    --text-3xl: 48px;
+    --text-4xl: 64px;
+    --text-base: 16px;
+    --text-lg: 18px;
+    --text-sm: 14px;
+    --text-xl: 22px;
+    --text-xs: 12px;
+    --leading-body: 1.55;
+    --leading-tight: 1.08;
+    --font-display: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    --font-body: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    --font-mono: "SF Mono", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", ui-monospace, Menlo, monospace;
+    --cjk-latin-shift: -0.15em;
+  }
+
+  body { font-family: var(--font-body); }
+
+  /* 中英混排: 把英文/数字那一截用 <span class="cjk-latin"> 包起来, 字号 + 基线对齐中文 (font-size-adjust 0.56 实测最贴中文字高) */
+  .cjk-latin { font-size-adjust: 0.56; vertical-align: var(--cjk-latin-shift, -0.15em); }
+}
