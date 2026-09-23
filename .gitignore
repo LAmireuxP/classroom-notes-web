@@ -27,3 +27,10 @@ dist-ssr
 vibex-local/bin/
 pocketbase/pb_data/
 pocketbase/logs/
+
+# 本地编辑器 / 平台工具配置，不随仓库分发
+CLAUDE.md
+AGENTS.md
+.cursor/
+.vibex/
+.vibex-app-type
